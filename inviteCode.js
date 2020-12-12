@@ -15,6 +15,7 @@ const petUrl = "http://api.turinglabs.net/api/v1/jd/pet/create/MTE1NDAxNzYwMDAwM
 const beanUrl = "http://api.turinglabs.net/api/v1/jd/bean/create/b5ag64gok3rggz25h54ku3hjqi/";
 
 const method = "GET";
+
 const headers = {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate, br",
