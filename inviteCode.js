@@ -19,7 +19,7 @@ const beanUrl = "http://api.turinglabs.net/api/v1/jd/bean/create/b5ag64gok3rggz2
     await jdCode();
 })()
     .catch((e) => {
-        $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+        $.log('', `失败! 原因: ${e}!`, '')
     })
     .finally(() => {
         $.done();
@@ -40,6 +40,7 @@ function ddFactoryRequest() {
       }}, async (err, resp, data) => {
       try {
         if (err) {
+            $.logErr(err)
         } else {
           console.log(data)
         }
@@ -59,6 +60,7 @@ function jxFactoryRequest() {
       }}, async (err, resp, data) => {
       try {
         if (err) {
+            $.logErr(err)
         } else {
           console.log(data)
         }
@@ -78,6 +80,7 @@ function farmRequest() {
       }}, async (err, resp, data) => {
       try {
         if (err) {
+            $.logErr(err)
         } else {
           console.log(data)
         }
@@ -97,6 +100,7 @@ function petRequest() {
       }}, async (err, resp, data) => {
       try {
         if (err) {
+            $.logErr(err)
         } else {
           console.log(data)
         }
@@ -116,6 +120,7 @@ function beanRequest() {
       }}, async (err, resp, data) => {
       try {
         if (err) {
+            $.logErr(err)
         } else {
           console.log(data)
         }
