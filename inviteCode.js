@@ -14,17 +14,6 @@ const petUrl = "http://api.turinglabs.net/api/v1/jd/pet/create/MTE1NDAxNzYwMDAwM
 
 const beanUrl = "http://api.turinglabs.net/api/v1/jd/bean/create/b5ag64gok3rggz25h54ku3hjqi/";
 
-const method = "GET";
-const headers = {
-        "Accept": "*/*",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-cn",
-        "Connection": "keep-alive",
-        "Host": "api.turinglabs.net",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36"
-      };
-const data = {"info": "abc"};
-
 $task.fetch(await jdBeanHome).then(response => {
     // response.statusCode, response.headers, response.body
     console.log(response.body);
@@ -37,9 +26,11 @@ $task.fetch(await jdBeanHome).then(response => {
 });
 
 async function jdBeanHome() {
-  await getUserInfo()
-  await getTaskList()
-  await showMsg();
+  await ddFactoryRequest()
+  await jxFactoryRequest()
+  await farmRequest();
+  await petRequest();
+  await beanRequest();
 }
 
 function ddFactoryRequest() {
