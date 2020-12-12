@@ -15,7 +15,6 @@ const petUrl = "http://api.turinglabs.net/api/v1/jd/pet/create/MTE1NDAxNzYwMDAwM
 const beanUrl = "http://api.turinglabs.net/api/v1/jd/bean/create/b5ag64gok3rggz25h54ku3hjqi/";
 
 const method = "GET";
-
 const headers = {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate, br",
@@ -26,81 +25,114 @@ const headers = {
       };
 const data = {"info": "abc"};
 
-
-const ddFactoryRequest = {
-    url: ddFactoryUrl,
-    method: method, // Optional, default GET.
-    headers: headers, // Optional.
-    body: JSON.stringify(data) // Optional.
-};
-const jxFactoryRequest = {
-    url: jxFactoryUrl,
-    method: method, // Optional, default GET.
-    headers: headers, // Optional.
-    body: JSON.stringify(data) // Optional.
-};
-const farmRequest = {
-    url: farmUrl,
-    method: method, // Optional, default GET.
-    headers: headers, // Optional.
-    body: JSON.stringify(data) // Optional.
-};
-const petRequest = {
-    url: petUrl,
-    method: method, // Optional, default GET.
-    headers: headers, // Optional.
-    body: JSON.stringify(data) // Optional.
-};
-const beanRequest = {
-    url: beanUrl,
-    method: method, // Optional, default GET.
-    headers: headers, // Optional.
-    body: JSON.stringify(data) // Optional.
-};
-
-$task.fetch(ddFactoryRequest).then(response => {
+$task.fetch(await jdBeanHome).then(response => {
     // response.statusCode, response.headers, response.body
     console.log(response.body);
     $notify("Title", "Subtitle", response.body); // Success!
+    $done();
 }, reason => {
     // reason.error
     $notify("Title", "Subtitle", reason.error); // Error!
+    $done();
 });
 
-$task.fetch(jxFactoryRequest).then(response => {
-    // response.statusCode, response.headers, response.body
-    console.log(response.body);
-    $notify("Title", "Subtitle", response.body); // Success!
-}, reason => {
-    // reason.error
-    $notify("Title", "Subtitle", reason.error); // Error!
-});
+async function jdBeanHome() {
+  await getUserInfo()
+  await getTaskList()
+  await showMsg();
+}
 
-$task.fetch(farmRequest).then(response => {
-    // response.statusCode, response.headers, response.body
-    console.log(response.body);
-    $notify("Title", "Subtitle", response.body); // Success!
-}, reason => {
-    // reason.error
-    $notify("Title", "Subtitle", reason.error); // Error!
-});
+function ddFactoryRequest() {
+  return new Promise(resolve => {
+    $.get({url: ddFactoryUrl,headers:{
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }}, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          console.log(data)
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 
-$task.fetch(petRequest).then(response => {
-    // response.statusCode, response.headers, response.body
-    console.log(response.body);
-    $notify("Title", "Subtitle", response.body); // Success!
-}, reason => {
-    // reason.error
-    $notify("Title", "Subtitle", reason.error); // Error!
-});
+function jxFactoryRequest() {
+  return new Promise(resolve => {
+    $.get({url: jxFactoryUrl,headers:{
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }}, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          console.log(data)
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 
-$task.fetch(beanRequest).then(response => {
-    // response.statusCode, response.headers, response.body
-    console.log(response.body);
-    $notify("Title", "Subtitle", response.body); // Success!
-}, reason => {
-    // reason.error
-    $notify("Title", "Subtitle", reason.error); // Error!
-});
+function farmRequest() {
+  return new Promise(resolve => {
+    $.get({url: farmUrl,headers:{
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }}, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          console.log(data)
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
 
-$done();
+function petRequest() {
+  return new Promise(resolve => {
+    $.get({url: petUrl,headers:{
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }}, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          console.log(data)
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+
+function beanRequest() {
+  return new Promise(resolve => {
+    $.get({url: beanUrl,headers:{
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }}, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          console.log(data)
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
