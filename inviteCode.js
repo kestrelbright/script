@@ -15,6 +15,8 @@ const petUrl = "http://api.turinglabs.net/api/v1/jd/pet/create/MTE1NDAxNzYwMDAwM
 
 const beanUrl = "http://api.turinglabs.net/api/v1/jd/bean/create/b5ag64gok3rggz25h54ku3hjqi/";
 
+const joyUrl = "http://api.turinglabs.net/api/v1/jd/joy/create/zY68L8bDN2IEVf8fiwFZZA==/";
+
 !(async () => {
     await jdCode();
 })()
@@ -31,6 +33,7 @@ async function jdCode() {
   await farmRequest();
   await petRequest();
   await beanRequest();
+  await joyRequest();
 }
 
 function ddFactoryRequest() {
@@ -116,6 +119,26 @@ function petRequest() {
 function beanRequest() {
   return new Promise(resolve => {
     $.get({url: beanUrl,headers:{
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }}, async (err, resp, data) => {
+      try {
+        if (err) {
+            $.logErr(err)
+        } else {
+          console.log(data)
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+
+function joyRequest() {
+  return new Promise(resolve => {
+    $.get({url: joyUrl,headers:{
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
       }}, async (err, resp, data) => {
       try {
