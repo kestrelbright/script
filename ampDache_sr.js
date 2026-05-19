@@ -1,10 +1,3 @@
-// =================================================
-// 高德地图签到 - Shadowrocket 入口脚本
-// 功能1：HTTP响应时抓取并保存会话信息
-// 功能2：定时任务时加载 core.js 并执行签到
-// 作者：你自己
-// =================================================
-
 // ---- 配置区 ----
 const CORE_URL = "https://raw.githubusercontent.com/kestrelbright/script/refs/heads/dev/amap_sign_core.js";
 const CK_KEY = "GD_Val";
