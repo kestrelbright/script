@@ -41,79 +41,44 @@ const isRequest = typeof $request !== "undefined";
 // =====================================================
 function captureSession() {
   try {
-    if (!$request) {
-      log("captureSession: $request 不存在，跳过");
-      $done({});
-      return;
-    }
+    // ===== 全量诊断日志 =====
+    log("===== 请求诊断开始 =====");
+    log("URL:", $request?.url || "无");
+    log("Method:", $request?.method || "无");
+    
+    // 打印所有请求头
+    const reqHeaders = $request?.headers || {};
+    log("请求头数量:", Object.keys(reqHeaders).length);
+    Object.keys(reqHeaders).forEach(k => {
+      log("请求头:", k, "=", String(reqHeaders[k]).slice(0, 100));
+    });
 
-    const headers = lowerHeaders($request.headers || {});
+    // 打印响应头
+    const respHeaders = $response?.headers || {};
+    log("响应头数量:", Object.keys(respHeaders).length);
+    Object.keys(respHeaders).forEach(k => {
+      log("响应头:", k, "=", String(respHeaders[k]).slice(0, 100));
+    });
 
-    // 1. 优先从请求头直接获取 sessionid
-    let sessionid = headers["sessionid"] || "";
+    // 打印响应体前500字符
+    const respBody = $response?.body || "";
+    log("响应体(前500):", respBody.slice(0, 500));
 
-    // 2. 从 Cookie 中提取
-    if (!sessionid && headers["cookie"]) {
-      const m = headers["cookie"].match(/(?:^|;\s*)sessionid=([^;]+)/i);
-      if (m) sessionid = decodeURIComponent(m[1]);
-    }
+    log("===== 请求诊断结束 =====");
 
-    // 3. 从响应体中提取 userId / adiu
-    let userId = "", adiu = "";
-    if (typeof $response !== "undefined" && $response.body) {
-      const body = toObj($response.body, {});
-      userId = body?.data?.uid
-        || body?.content?.uid
-        || body?.uid
-        || body?.result?.uid
-        || "";
-      adiu = body?.data?.adiu
-        || body?.content?.adiu
-        || body?.adiu
-        || body?.deviceId
-        || "";
-    }
+    notify(
+      "高德-诊断",
+      "请查看 Shadowrocket 日志",
+      "URL: " + ($request?.url || "无").slice(0, 60)
+    );
 
-    // 4. 从请求 URL 中提取
-    const url = $request.url || "";
-    if (!userId) {
-      const m = url.match(/[?&](?:uid|userId)=([^&]+)/i);
-      if (m) userId = decodeURIComponent(m[1]);
-    }
-    if (!adiu) {
-      const m = url.match(/[?&](?:adiu|deviceId)=([^&]+)/i);
-      if (m) adiu = decodeURIComponent(m[1]);
-    }
-
-    // 5. 验证并保存
-    if (sessionid && sessionid.length > 10) {
-      const existing = toObj(readStore(CK_KEY), {});
-
-      // userId / adiu 保留旧值（如果新值为空）
-      const newVal = {
-        sessionid,
-        userId: userId || existing.userId || "",
-        adiu: adiu || existing.adiu || "",
-        updatedAt: new Date().toLocaleString("zh-CN", { hour12: false })
-      };
-
-      writeStore(toStr(newVal), CK_KEY);
-
-      log("抓取成功:", "sessionid=" + sessionid.slice(0, 10) + "...");
-      notify(
-        "高德签到 - 抓取成功",
-        "会话已保存",
-        `sessionid: ${sessionid.slice(0, 10)}...\nupdatedAt: ${newVal.updatedAt}`
-      );
-    } else {
-      log("未找到有效 sessionid，跳过保存");
-    }
   } catch (e) {
-    log("captureSession 异常:", e.message || e);
+    log("诊断异常:", e.message || e);
   }
 
   $done({});
 }
+
 
 // =====================================================
 // 模式2：定时任务执行签到
