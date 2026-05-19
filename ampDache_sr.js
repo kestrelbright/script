@@ -6,7 +6,7 @@
 // =================================================
 
 // ---- 配置区 ----
-const CORE_URL = "https://raw.githubusercontent.com/yourname/yourrepo/main/amap_sign_core.js";
+const CORE_URL = "https://raw.githubusercontent.com/kestrelbright/script/refs/heads/dev/amap_sign_core.js";
 const CK_KEY = "GD_Val";
 const CORE_CACHE_KEY = "GD_Core_Cache";
 const CORE_CACHE_TIME_KEY = "GD_Core_Cache_Time";
