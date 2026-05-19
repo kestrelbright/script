@@ -41,43 +41,75 @@ const isRequest = typeof $request !== "undefined";
 // =====================================================
 function captureSession() {
   try {
-    // ===== 全量诊断日志 =====
-    log("===== 请求诊断开始 =====");
-    log("URL:", $request?.url || "无");
-    log("Method:", $request?.method || "无");
-    
-    // 打印所有请求头
+    const url = $request?.url || "";
+    if (!/https?:\/\/([^.]+\.)*amap\.com\//i.test(url)) {
+      log("非高德域名，跳过:", url);
+      return $done({});
+    }
+
     const reqHeaders = $request?.headers || {};
-    log("请求头数量:", Object.keys(reqHeaders).length);
-    Object.keys(reqHeaders).forEach(k => {
-      log("请求头:", k, "=", String(reqHeaders[k]).slice(0, 100));
-    });
-
-    // 打印响应头
     const respHeaders = $response?.headers || {};
-    log("响应头数量:", Object.keys(respHeaders).length);
-    Object.keys(respHeaders).forEach(k => {
-      log("响应头:", k, "=", String(respHeaders[k]).slice(0, 100));
-    });
 
-    // 打印响应体前500字符
-    const respBody = $response?.body || "";
-    log("响应体(前500):", respBody.slice(0, 500));
+    const getHeader = (obj, key) => {
+      const k = Object.keys(obj).find(x => x.toLowerCase() === key.toLowerCase());
+      return k ? obj[k] : "";
+    };
 
-    log("===== 请求诊断结束 =====");
+    let sessionid = "";
 
-    notify(
-      "高德-诊断",
-      "请查看 Shadowrocket 日志",
-      "URL: " + ($request?.url || "无").slice(0, 60)
-    );
+    // 1) Cookie
+    const cookie = getHeader(reqHeaders, "cookie") || "";
+    let m = cookie.match(/(?:^|;\s*)sessionid=([^;]+)/i);
+    if (m) sessionid = decodeURIComponent(m[1]);
 
+    // 2) 直接请求头
+    if (!sessionid) {
+      sessionid = getHeader(reqHeaders, "sessionid") || "";
+    }
+
+    // 3) 响应头 Set-Cookie
+    if (!sessionid) {
+      const setCookie = getHeader(respHeaders, "set-cookie");
+      if (setCookie) {
+        const arr = Array.isArray(setCookie) ? setCookie : [setCookie];
+        for (const c of arr) {
+          const mm = String(c).match(/(?:^|;\s*)sessionid=([^;]+)/i);
+          if (mm) {
+            sessionid = decodeURIComponent(mm[1]);
+            break;
+          }
+        }
+      }
+    }
+
+    // 4) 兜底：从 URL 参数里找
+    if (!sessionid) {
+      m = url.match(/[?&]sessionid=([^&]+)/i);
+      if (m) sessionid = decodeURIComponent(m[1]);
+    }
+
+    if (!sessionid) {
+      log("未找到有效 sessionid，URL:", url);
+      return $done({});
+    }
+
+    const old = JSON.parse($persistentStore.read("GD_Val") || "{}");
+    const data = {
+      sessionid,
+      userId: old.userId || "",
+      adiu: old.adiu || "",
+      updatedAt: new Date().toLocaleString("zh-CN", { hour12: false })
+    };
+
+    $persistentStore.write(JSON.stringify(data), "GD_Val");
+    log("抓取成功 sessionid:", sessionid.slice(0, 12) + "...");
+    $notification.post("高德签到", "抓取成功", "sessionid 已更新");
   } catch (e) {
-    log("诊断异常:", e.message || e);
+    log("captureSession异常:", e.message || e);
   }
-
   $done({});
 }
+
 
 
 // =====================================================
